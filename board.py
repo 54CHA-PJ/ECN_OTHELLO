@@ -2,7 +2,9 @@
 
 import numpy as np
 from random import randint
-from colorama import Fore, Style
+from colorama import Fore, Style, init as colorama_init
+
+colorama_init()
 
 size = 8
 
@@ -103,7 +105,7 @@ def print_board(board):
     print()
     for i in range(size):
         # Affiche le numéro de la ligne en rouge
-        print(f'{Fore.RED}   {size - i}{Style.RESET_ALL}', end=' ')
+        print(f'{Fore.LIGHTRED_EX}   {size - i}{Style.RESET_ALL}', end=' ')
         for j in range(size):
             # Contenu de la case
             p = board[i * size + j]
@@ -120,7 +122,7 @@ def print_board(board):
     # Numéros de colonne en bleu
     print("     ", end='')
     for i in range(size):
-        print(f'{Fore.BLUE}{i + 1}{Style.RESET_ALL}', end=' ')
+        print(f'{Fore.LIGHTBLUE_EX}{i + 1}{Style.RESET_ALL}', end=' ')
     print()
     print()
 
@@ -194,20 +196,20 @@ def human(board, player):
     # 1) Collect legal moves
     L = legal_moves(board, player)
     
-    # 2) Print them in "rowcol" notation (or "pass" if pass_move)
+    # 2) Print them in "rowcol" notation (or "pass" if pass_move) along with the original move id
     print("MOVES:")
-    for m in L:
+    sorted_moves = sorted(L, key=lambda m: (-m // size, m % size))
+    for m in sorted_moves:
         if m == pass_move:
             print("pass")
         else:
             i = m // size       # i in [0..7], 0=top row
             j = m % size       # j in [0..7], 0=left column
-            row_label = f'{Fore.RED}{size - i}{Style.RESET_ALL}'  # Red for rows
-            col_label = f'{Fore.BLUE}{j + 1}{Style.RESET_ALL}'    # Blue for columns
-            print(f"{row_label}{col_label}")
-    
+            row_label = f'{Fore.LIGHTRED_EX}{size - i}{Style.RESET_ALL}'  # Red for rows
+            col_label = f'{Fore.LIGHTBLUE_EX}{j + 1}{Style.RESET_ALL}'    # Blue for columns
+            print(f"  {row_label}{col_label} {Fore.LIGHTBLACK_EX}({m}){Style.RESET_ALL}")
     # 3) Get user input
-    s = input('Votre coup (ligne colonne sans espace, ou "pass" pour passer):')
+    s = input('\nVotre coup (ligne colonne sans espace, ou "pass" pour passer):')
     
     # 4) Convert input to a move index
     if s == 'pass':
