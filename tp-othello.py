@@ -2,8 +2,11 @@
 
 from timeit import default_timer as timer
 
-from board import init_board, print_board, play, terminal, j2, j1, winner, human, alea, j1_str, j2_str
+from board import init_board, print_board, play, terminal, j2, j1, winner, j1_str, j2_str
 
+from board import evaluate, human, ai_alea, ai_minimax, ai_minimax_tr, ai_alphabeta, ai_alphabeta_tr, ai_mcts
+
+# Fichier principal tp-othello.py avec intégration de ai_minmax_tr
 b = init_board()
 print_board(b)
 player = j1
@@ -11,17 +14,18 @@ player = j1
 while not terminal(b):
     if player == j1:
         start = timer()
-        m = human(b, player)
+        m = ai_alea(b, player)
         end = timer()
-        print(f'humain a joué en {end - start:.2f}s')
+        print(f'IA 1 (Aleatoire) a joué en {end - start:.2f}s')
     else:
         start = timer()
-        m = alea(b, player)
+        m = ai_mcts(b, player, max_iter=10000)
         end = timer()
-        print(f'IA aléatoire a joué en {end - start:.2f}s')
+        print(f'IA 2 (MCTS) a joué en {end - start:.2f}s')
 
     b = play(b, m, player)
     print_board(b)
+    print("Evaluation: ", evaluate(b))
     print()
     player = -player
 
